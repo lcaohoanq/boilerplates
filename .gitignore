@@ -5,6 +5,28 @@
 # Docker Secrets, Environment Files
 **/secret.*
 **/.env
+**/.envrc
+**/.direnv
 
 # Ignore Ansible
 **/.ansible
+
+# Python
+**/__pycache__/
+**/*.py[cod]
+**/*.pyo
+**/*.pyd
+**/.venv
+**/venv/
+**/.ruff_cache/
+
+# Packaging
+*.egg-info/
+build/
+dist/
+
+# Installation tracking
+.installed-version
+
+# Test outputs
+config.yaml
