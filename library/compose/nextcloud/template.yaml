@@ -1,9 +1,9 @@
----
 kind: compose
 metadata:
   name: Nextcloud
-  description: 'Self-hosted file sync and share platform. Nextcloud is a suite of client-server software for creating and
-    using file hosting services. It provides functionality similar to Dropbox, with the added benefit of being self-hosted
+  description: 'Self-hosted file sync and share platform. Nextcloud is a suite of
+    client-server software for creating and using file hosting services. It provides
+    functionality similar to Dropbox, with the added benefit of being self-hosted
     and open-source.
 
 
@@ -17,11 +17,11 @@ metadata:
   icon:
     provider: selfh
     id: nextcloud
-  version: 32.0.5-apache
+  version: 32.0.6-apache
   author: Christian Lempa
-  date: '2026-01-17'
+  date: '2026-02-13'
   tags:
-    - traefik
+  - traefik
   draft: true
 schema: '1.2'
 spec:
@@ -32,8 +32,8 @@ spec:
         description: Database type (Nextcloud supports PostgreSQL or MySQL/MariaDB)
         type: enum
         options:
-          - postgres
-          - mysql
+        - postgres
+        - mysql
         default: postgres
       database_name:
         type: str
@@ -56,10 +56,10 @@ spec:
       restart_policy:
         type: enum
         options:
-          - unless-stopped
-          - always
-          - on-failure
-          - 'no'
+        - unless-stopped
+        - always
+        - on-failure
+        - 'no'
         default: unless-stopped
         required: true
   network:
@@ -104,6 +104,9 @@ spec:
         type: bool
         default: false
         description: Enable Traefik integration
+    toggle: traefik_enabled
+    title: Traefik
+    description: Configure Traefik reverse proxy integration
   traefik_tls:
     vars:
       traefik_tls_certresolver:
@@ -114,23 +117,8 @@ spec:
         type: bool
         default: false
         description: Enable Traefik TLS
-  swarm:
-    vars:
-      swarm_replicas:
-        type: int
-        default: 1
-        needs:
-          - swarm_placement_mode=replicated
-        required: true
-      swarm_enabled:
-        type: bool
-        default: false
-        description: Enable Docker Swarm mode
-      swarm_placement_host:
-        type: str
-        default: ''
-        description: The placement host
-      swarm_placement_mode:
-        type: str
-        default: replicated
-        description: The placement mode
+    toggle: traefik_tls_enabled
+    title: Traefik TLS
+    description: Configure Traefik TLS/SSL certificates
+    needs: traefik
+  swarm: null

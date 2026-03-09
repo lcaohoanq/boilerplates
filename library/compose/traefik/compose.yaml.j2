@@ -1,7 +1,7 @@
 ---
 services:
   {{ service_name }}:
-    image: docker.io/library/traefik:v3.6.7
+    image: docker.io/library/traefik:v3.6.8
     {% if not swarm_enabled %}
     {% if container_name %}
     container_name: {{ container_name }}
@@ -23,7 +23,6 @@ services:
       {% if accesslog_enabled %}
       - "--accesslog=true"
       {% endif %}
-      - "--ping.entryPoint=ping"
       {% if dashboard_enabled %}
       - "--api.dashboard=true"
       - "--api.insecure=true"
@@ -50,9 +49,6 @@ services:
       - "--certificatesresolvers.{{ traefik_tls_certresolver }}.acme.caServer=https://acme-v02.api.letsencrypt.org/directory"
       - "--certificatesresolvers.{{ traefik_tls_certresolver }}.acme.dnsChallenge.provider={{ traefik_tls_certresolver }}"
       - "--certificatesresolvers.{{ traefik_tls_certresolver }}.acme.dnsChallenge.resolvers=1.1.1.1:53,8.8.8.8:53"
-      {% endif %}
-      {% if traefik_tls_min_version %}
-      - "--tls.options.default.minVersion={{ traefik_tls_min_version }}"
       {% endif %}
       {% if traefik_tls_secure_ciphers %}
       - "--tls.options.default.cipherSuites=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256"
@@ -146,6 +142,17 @@ services:
       - NAMECHEAP_API_KEY=${NAMECHEAP_API_KEY}
       {% endif %}
       - NAMECHEAP_API_USER={{ traefik_tls_acme_username }}
+      {% elif traefik_tls_certresolver == 'ovh' %}
+      - OVH_ENDPOINT={{ traefik_tls_acme_endpoint | default('ovh-eu') }}
+      {% if swarm_enabled %}
+      - OVH_APPLICATION_KEY_FILE=/run/secrets/{{ service_name }}_token
+      - OVH_APPLICATION_SECRET_FILE=/run/secrets/{{ service_name }}_token_key
+      - OVH_CONSUMER_KEY_FILE=/run/secrets/{{ service_name }}_consumer_key
+      {% else %}
+      - OVH_APPLICATION_KEY=${OVH_APPLICATION_KEY}
+      - OVH_APPLICATION_SECRET=${OVH_APPLICATION_SECRET}
+      - OVH_CONSUMER_KEY=${OVH_CONSUMER_KEY}
+      {% endif %}
       {% endif %}
       {% endif %}
     healthcheck:
@@ -162,6 +169,9 @@ services:
       - {{ service_name }}_token
       {% if traefik_tls_acme_secret_key %}
       - {{ service_name }}_token_key
+      {% endif %}
+      {% if traefik_tls_certresolver == 'ovh' %}
+      - {{ service_name }}_consumer_key
       {% endif %}
     {% endif %}
     deploy:
@@ -188,6 +198,10 @@ secrets:
   {% if traefik_tls_acme_secret_key %}
   {{ service_name }}_token_key:
     file: ./.env.secret.token_key
+  {% endif %}
+  {% if traefik_tls_certresolver == 'ovh' %}
+  {{ service_name }}_consumer_key:
+    file: ./.env.secret.consumer_key
   {% endif %}
 {% endif %}
 

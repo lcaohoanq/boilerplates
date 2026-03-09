@@ -21,9 +21,9 @@ metadata:
     - **Documentation**: https://docs.renovatebot.com/
     - **GitHub**: https://github.com/renovatebot/renovate
 
-  version: 13.3.0-full
+  version: 13.6.0-full
   author: Christian Lempa
-  date: '2026-01-12'
+  date: '2026-02-13'
   tags:
     - traefik
     - swarm
@@ -96,6 +96,9 @@ spec:
         description: "External HTTP port for web interface"
         default: 8080
   traefik:
+    title: Traefik
+    toggle: traefik_enabled
+    description: Configure Traefik reverse proxy integration
     vars:
       traefik_enabled:
         type: bool
@@ -108,13 +111,7 @@ spec:
         default: "home.arpa"
       traefik_entrypoint:
         default: "web"
-      traefik_tls_entrypoint:
-        default: "websecure"
-      traefik_tls_enabled:
         type: bool
-        default: true
-      traefik_tls_certresolver:
-        default: "cloudflare"
   network:
     vars:
       network_mode:
@@ -124,6 +121,7 @@ spec:
       network_name:
         default: "bridge"
   swarm:
+    toggle: swarm_enabled
     vars:
       swarm_enabled:
         type: bool

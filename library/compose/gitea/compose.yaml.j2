@@ -1,6 +1,6 @@
 services:
   {{ service_name }}:
-    image: docker.io/gitea/gitea:1.25.3
+    image: docker.io/gitea/gitea:1.25.4
     restart: {{ restart_policy }}
     environment:
       - USER_UID={{ user_uid }}
@@ -63,7 +63,7 @@ services:
 
   {% if not database_external and database_type == "postgres" %}
   {{ service_name }}_db:
-    image: docker.io/library/postgres:17.7
+    image: docker.io/library/postgres:17.8
     restart: {{ restart_policy }}
     environment:
       - TZ={{ container_timezone }}

@@ -1,6 +1,6 @@
 services:
   {{ service_name }}:
-    image: docker.io/grafana/grafana-oss:12.3.1
+    image: docker.io/grafana/grafana-oss:12.3.3
     restart: {{ restart_policy }}
     {% if database_type == 'postgres' or authentik_enabled %}
     environment:
@@ -68,7 +68,7 @@ services:
 
   {% if not database_external and database_type == "postgres" %}
   {{ service_name }}_db:
-    image: docker.io/library/postgres:17.7
+    image: docker.io/library/postgres:17.8
     restart: {{ restart_policy }}
     environment:
       - POSTGRES_USER={{ database_user }}
